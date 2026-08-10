@@ -1,0 +1,36 @@
+# Security Headers
+<IfModule mod_headers.c>
+Header set Age "216000"
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+Header set X-Xss-Protection "1; mode=block"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-Content-Type-Options "nosniff"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+Header set Permissions-Policy "geolocation=self"
+
+#content security policy
+#Header add Content-Security-Policy "default-src 'self';"
+#disable because so many menu be ubnormal
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteBase /
+
+	RewriteRule ^$ /index\.php [L]
+	RewriteCond $1 !^(index\.php|repository|download|third_party|assets|stats|redd|pma|phpmyadmin|favicon\.gif)
+	
+	
+	RewriteCond $1 !^(images.*.(bmp|jpg|jpeg|gif|png|doc|docx|xls|xlsx|ppt|pptx|pdf|rtf|txt|zip|rar|odt))
+	RewriteCond $1 !^(images.*.(BMP|JPG|JPEG|GIF|PNG|DOC|DOCX|XLS|XLSX|PPT|PPTX|PDF|RTF|TXT|ZIP|RAR|ODT))
+	
+	RewriteCond $1 !^(images.*.(WEBM|AAC|M4A|F4A|MP3|OGG|OGA|OGV|FLV|MP4|M4V|F4V|MOV))
+	RewriteCond $1 !^(images.*.(webm|aac|m4a|f4a|mp3|ogg|oga|ogv|flv|mp4|m4v|f4v|mov))
+	
+#	RewriteRule ^(.*)$ /index.php?/$1 [L]
+	RewriteRule ^(.*)$ index.php?q=$1 [B,L,QSA]	
+</IfModule>
+<IfModule !mod_rewrite.c>
+    ErrorDocument 402 /index\.php
+</IfModule>
+Options -Indexes

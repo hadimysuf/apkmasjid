@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web5:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: porchn/php5.6-apache
+    container_name: tjslperuri5-app
+    ports:
+      - "8017:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache.conf:/etc/apache2/sites-available/000-default.conf
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php_errors.log:/var/log/php_errors.log
+      - ./docker/custom.source.list:/etc/apt/sources.list
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    # depends_on:
+    #   - db
+    networks:
+      - tjslperuri5-network
+
+  db5:
+    image: postgres:9.6
+    container_name: tjslperuri5-db
+    environment:
+      POSTGRES_USER: pgtjsl
+      POSTGRES_PASSWORD: plokijuh890-MNB
+      POSTGRES_DB: tjsl_peruri
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "9432:5432"
+    networks:
+      - tjslperuri5-network
+
+volumes:
+  pgdata:
+
+networks:
+  tjslperuri5-network:
+    driver: bridge

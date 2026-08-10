@@ -1,0 +1,1080 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+@font-face {
+	font-family: 'Titillium Web';
+    src:  url('../fonts/Titillium-Web-ExtraLight.ttf.woff') format('woff'),
+    url('../fonts/Titillium-Web-ExtraLight.ttf.svg#Titillium-Web-ExtraLight') format('svg'),
+    url('../fonts/Titillium-Web-ExtraLight.ttf.eot'),
+    url('../fonts/Titillium-Web-ExtraLight.eot?#iefix') format('embedded-opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+@font-face {
+	font-family: 'OpenSansCondLight';
+	src: url('../fonts/OpenSansCondLight/OpenSansCondLight.eot');
+	src: local('OpenSansCondLight'), url('../fonts/OpenSansCondLight/OpenSansCondLight.woff') format('woff'), url('../fonts/OpenSansCondLight/OpenSansCondLight.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: "Arial";
+	src: url("../fonts/Arial/Arial.eot"); /* IE9*/
+	src: url("../fonts/Arial/Arial.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+	url("../fonts/Arial/Arial.woff2") format("woff2"), /* chrome、firefox */
+	url("../fonts/Arial/Arial.woff") format("woff"), /* chrome、firefox */
+	url("../fonts/Arial/Arial.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+	url("../fonts/Arial/Arial.svg#Arial") format("svg"); /* iOS 4.1- */
+}
+
+
+
+
+
+
+:root {
+	--masjid-bg: #06361f;
+	--masjid-sidebar: #082B1B;
+	--masjid-card: #0B3B26;
+	--masjid-gold: #D4AF37;
+	--masjid-cream: #F6F4EB;
+	--masjid-sage: #9DB3A6;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Titillium Web', Helvetica, Arial, sans-serif;
+  background-color: var(--masjid-bg);
+}
+
+
+h1,h2,h3,h4,h5{
+  color: #333;
+}
+#full-screen-clock{
+	position: fixed;
+	bottom:0;
+	left:0;
+	right:0;
+	font-size:4vw;
+	color:#FFF;
+	padding:1vw 5vw;
+	background:rgba(0,0,0,0.3);
+	text-align:right;
+	opacity:0.5;
+	z-index:100;
+}
+.full-screen {
+	position: fixed;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color: var(--masjid-bg);
+	background-size: cover;
+	background-position: center top;
+	background-repeat: no-repeat;
+	z-index:99;
+	color:#fff;
+}
+#display-khutbah{
+	background-image: url(../img/bg-kubah.png);
+}
+#count-down{
+	background-image: url(../img/bg-masjid.png);
+}
+#display-sholat{
+	background-image: url(../img/bg-sholat.png);
+}
+#display-adzan{
+	background-image: url(../img/bg-adzan.png);
+}
+#display-adzan>div{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+	transform: translate(-50%,-50%);
+    color: #788;
+	text-shadow: 0.3vw 0.3vw 0 rgba(0,0,0,.3);
+	padding:10vw;
+	width: 100%;
+	padding: 0 3vw;
+	font-size:10vw;
+    text-align: center;
+    text-transform: uppercase;
+	font-family: 'OpenSansCondLight', Helvetica, Arial, sans-serif; 
+	/* font-weight:bold; */
+}
+#display-khutbah>div{
+	position: absolute;
+    top: 45%;
+    left: 50%;
+	transform: translate(-50%,-50%);
+    color: #788;
+	text-shadow: 0.3vw 0.3vw 0 rgba(0,0,0,.3);
+	padding:10vw;
+	width: 100%;
+	padding: 0 3vw;
+	font-size:6vw;
+    text-align: center;
+	font-family: 'OpenSansCondLight', 'Titillium Web', Helvetica, Arial, sans-serif; 
+	text-transform: uppercase;
+	/* font-weight:bold; */
+}
+
+#count-down .counter {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+	transform: translate(-50%,-50%);
+    color: #788;
+	width: 100%;
+	padding: 0 3vw;
+    text-align: center;
+    text-transform: uppercase;
+	font-family: 'OpenSansCondLight', Helvetica, Arial, sans-serif;  
+}
+#count-down .counter>h1{
+	margin: 0 auto;
+	font-size:7vh;
+	line-height:9vh;
+	/* background:#F00; */
+	width:61.5vw;
+	color: #788;
+	border: 0.3vh solid #788;
+	border-radius: 1vh;
+	font-family: 'Titillium Web', 'OpenSansCondLight', Helvetica, Arial, sans-serif; 
+	font-weight:bold;
+}
+#count-down .counter>div{
+    display: inline-block;
+	width:20vw;
+	font-size:25vh;
+	line-height:30vh;
+	margin:0 0.3vw;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.75);
+	padding:0;
+	/* background:#f00; */
+}
+#count-down .counter>div>span {
+	background:#788;
+	font-size:5vh;
+	line-height:7vh;
+	font-weight:bold;
+	text-shadow: none;
+	color:#000;
+	display: block;
+	border-radius: 1vh;
+}
+
+
+/*============== Preloader ==============*/
+
+/* Preloader */
+#preloader {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color:#fff; /* change if the mask should have another color then white */
+  z-index:99; /* makes sure it stays on top */
+}
+
+#status {
+  width:200px;
+  height:200px;
+  position:absolute;
+  left:50%; /* centers the loading animation horizontally one the screen */
+  top:50%; /* centers the loading animation vertically one the screen */
+  background-image:url(../img/preloader.gif); /* path to your loading animation */
+  background-repeat:no-repeat;
+  background-position:center;
+  margin:-100px 0 0 -100px; /* is width and height divided by two */
+}
+
+
+
+/*
+Fade content bs-carousel with hero headers
+Code snippet by maridlcrmn (Follow me on Twitter @maridlcrmn) for Bootsnipp.com
+Image credits: unsplash.com
+*/
+
+/********************************/
+/*       Fade Bs-carousel       */
+/********************************/
+.fade-carousel {
+    position: fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	z-index:-1;
+    /* height: 100vh; */
+}
+.fade-carousel .carousel-inner .item {
+    height: 100vh;
+}
+
+
+
+
+/********************************/
+/*          Hero Headers        */
+/********************************/
+
+
+.fade-carousel .carousel-inner .item .hero {
+    opacity: 0;
+    -webkit-transition: 2s all ease-in-out .1s;
+       -moz-transition: 2s all ease-in-out .1s; 
+        -ms-transition: 2s all ease-in-out .1s; 
+         -o-transition: 2s all ease-in-out .1s; 
+            transition: 2s all ease-in-out .1s; 
+}
+.fade-carousel .carousel-inner .item.active .hero {
+    opacity: 1;
+    -webkit-transition: 2s all ease-in-out .1s;
+       -moz-transition: 2s all ease-in-out .1s; 
+        -ms-transition: 2s all ease-in-out .1s; 
+         -o-transition: 2s all ease-in-out .1s; 
+            transition: 2s all ease-in-out .1s;    
+}
+
+/********************************/
+/*            Overlay           */
+/********************************/
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: var(--masjid-bg);
+    opacity: .85;
+}
+
+/********************************/
+/*          Custom Buttons      */
+/********************************/
+.btn.btn-lg {padding: 10px 40px;}
+.btn.btn-hero,
+.btn.btn-hero:hover,
+.btn.btn-hero:focus {
+    color: #f5f5f5;
+    background-color: #33cccc;
+    border-color: #33cccc;
+    outline: none;
+    margin: 20px auto;
+}
+
+/********************************/
+/*       Slides backgrounds     */
+/********************************/
+.fade-carousel .slides div{
+  height: 100vh;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.fade-carousel .slides .slide-1 {
+  background-image: url(../img/photo-01.jpg);
+}
+.fade-carousel .slides .slide-2 {
+  background-image: url(../img/photo-02.jpg);
+}
+.fade-carousel .slides .slide-3 {
+  background-image: url(../img/photo-03.jpg);
+}
+
+.fade-carousel .slides.active .slide-1,
+.fade-carousel .slides.active .slide-2,
+.fade-carousel .slides.active .slide-3{
+	/* gak jadi, resourse prosesornya jadi full */
+	/* animation: imgMove1 100s linear infinite; */
+}
+
+
+@keyframes imgMove1 {
+	0%   {background-size: 120%;background-position: right bottom;}
+	50%  {background-size: 150%;background-position: left top;}
+	100% {background-size: 120%;background-position: right bottom;}
+}
+@keyframes imgMove2 {
+	0%   {background-size: 120%;background-position: left top;}
+	50%  {background-size: 150%;background-position: right bottom;}
+	100% {background-size: 120%;background-position: left top;}
+}
+@keyframes imgMove3 {
+	0%   {background-size: 120%;background-position: right top;}
+	50%  {background-size: 150%;background-position: left bottom;}
+	100% {background-size: 120%;background-position: right top;}
+}
+
+
+.main{
+	
+}
+
+#left-container{
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	width:26vw;
+	background-color: var(--masjid-sidebar);
+	background-image: url('../img/sidebar1.png');
+	background-size: cover;
+	background-position: center;
+	border-right: 2px solid rgba(212, 175, 55, 0.2);
+}
+
+#jam{
+	font-size:6vw;
+	line-height: 1;
+	text-align: center;
+	margin: -8vh 0 0 0;
+	font-weight:bold;
+	color: var(--masjid-gold);
+	position:relative;
+}
+#jam div{
+	display: inline-block;
+	position: relative;
+	top: -1.5vw;
+	margin-left: 0.5vw;
+	color: var(--masjid-sage);
+	line-height: 1;
+	font-size: 2.5vw;
+	font-weight: bold;
+	font-family: 'Titillium Web', Helvetica, Arial, sans-serif;  
+}
+#tgl{
+	text-align: center;
+	color:var(--masjid-cream);
+	font-size:2vw;
+	margin: 0.2vh auto 1vw auto;
+	font-weight:600;
+	position:relative;
+}
+#jadwal{
+	margin: 0 2.5vw;
+	font-weight:bold;
+}
+#jadwal .row .col-xs-5{
+	font-size:1.6vw;
+	font-weight: 500;
+	padding-top:1.5vh;
+	position:relative;
+	padding-left:1.5vw;
+	width:50%;
+	color: var(--masjid-cream);
+}
+#jadwal .row .col-xs-7{
+	font-size:2.2vw;
+	font-weight:bold;
+	text-align:right;
+	padding-right:1.8vw;
+	width:50%;
+	color: var(--masjid-gold);
+}
+#jadwal .row .col-xs-7 span{
+	position:absolute;
+	right:0vw;
+	top:0.5vw;
+	font-size:1vw;
+	color: var(--masjid-gold);
+	padding: 0 5px;
+	border-radius:1px;
+}
+#jadwal .row{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--masjid-card);
+	border-radius: 0.75rem;
+	border: 1px solid rgba(212, 175, 55, 0.4);
+	padding: 0.5rem 1rem;
+	margin-bottom: 0.4rem;
+	position:relative;
+}
+
+#jadwal .active{
+	background-color: var(--masjid-gold);
+	box-shadow: 0 4px 16px 0 rgba(212, 175, 55, 0.25);
+	color: var(--masjid-bg);
+}
+
+#jadwal .active .col-xs-5, #jadwal .active .col-xs-7 {
+	color: var(--masjid-bg);
+}
+
+
+
+
+
+
+
+#right-counter{
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:26vw;
+	background-color: rgba(5, 26, 16, 0.95); /* Menutupi isi konten di belakangnya */
+	z-index: 10;
+}
+#right-counter .counter {
+    color: #fff;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+	transform: translate(-50%,-50%);
+    color: #fff;
+	width: 100%;
+	padding: 0 3vw;
+    text-align: center;
+    text-transform: uppercase;
+	font-family: 'OpenSansCondLight', Helvetica, Arial, sans-serif;  
+}
+#right-counter .counter>h1{
+	margin: 0 auto;
+	font-size:5vh;
+	line-height:7vh;
+	font-family: 'Titillium Web', 'OpenSansCondLight', Helvetica, Arial, sans-serif; 
+	font-weight:bold;
+	/* background:#F00; */
+	width:46.5vw;
+	color: #33cccc;
+	border: 0.3vh solid #33cccc;
+	border-radius: 1vh;
+}
+#right-counter .counter>div{
+    display: inline-block;
+	width:15vw;
+	font-size:20vh;
+	line-height:25vh;
+	margin:0 0.3vw;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.75);
+	padding:0;
+	color:#FFF;
+	/* background:#f00; */
+}
+#right-counter .counter>div>span {
+	background:#e2ad00;
+	font-size:5vh;
+	line-height:7vh;
+	font-weight:bold;
+	text-shadow: none;
+	color:#000;
+	display: block;
+	border-radius: 1vh;
+}
+
+
+
+#right-container{
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:26vw;
+	/* background-color:rgba(255,0,0,0.3) */
+}
+#running-text{
+	height:3.5vw;
+	width:100vw;
+	color: var(--masjid-cream);
+	background-color: var(--masjid-sidebar);
+	border-top: 2px solid var(--masjid-gold);
+	position:fixed;
+	bottom:0;
+	right:0;
+	left: 0;
+	border-radius:0;
+	display: flex;
+	align-items: center;
+	z-index: 11;
+}
+
+#running-text-title {
+	background-color: var(--masjid-sidebar);
+	color: var(--masjid-gold);
+	font-weight: bold;
+	font-size: 1.5vw;
+	text-transform: uppercase;
+	padding: 0 2vw;
+	border-right: 2px solid rgba(212, 175, 55, 0.2);
+	height: 100%;
+	display: flex;
+	align-items: center;
+	z-index: 12;
+}
+
+#running-text-title i {
+	margin-right: 1vw;
+	font-size: 1.5vw;
+}
+
+#running-text .item{
+	flex: 1;
+	height:100%;
+	overflow: hidden;
+	font-family: 'Titillium Web', 'OpenSansCondLight', Helvetica, Arial, sans-serif; 
+	font-size: 1.6vw;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+}
+
+
+/* @keyframes scroll-left { */
+	/* 0% { */
+		/* transform: translateX(100%); */
+	/* } */
+	/* 100% { */
+		/* transform: translateX(-100%); */
+	/* } */
+/* } */
+
+
+#logo{
+	display: none;
+}
+.sidebar-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 2.5vw;
+	margin-bottom: 0;
+}
+.sidebar-logo {
+	width: 10vw;
+	height: 10vw;
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	margin-bottom: 1vw;
+}
+.main-header-title {
+	position: absolute;
+	top: 1vw;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	z-index: 10;
+}
+.main-header-title h1 {
+	font-size: 3.5vw;
+	font-weight: bold;
+	color: var(--masjid-gold);
+	margin: 0;
+	text-transform: uppercase;
+	font-family: 'Montserrat', sans-serif;
+	text-shadow: 0 0.5vw 1vw rgba(0,0,0,0.5);
+}
+.main-header-title p {
+	font-size: 1.5vw;
+	color: var(--masjid-cream);
+	margin: 0;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	text-shadow: 0 0.2vw 0.5vw rgba(0,0,0,0.5);
+}
+
+.quote-carousel {
+    /* position: relative; */
+	/* background-color:rgba(255,255,0,0.3); */
+	/* top:0; */
+	/* right:0; */
+	/* bottom:0; */
+	/* left:0; */
+    /* height: 100vh; */
+}
+.quote-carousel .carousel-inner .item {
+    height: 100vh;
+}
+.quote-carousel .carousel-inner .item .hero {
+    color: #fff;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+	transform: translate(-50%,-50%);
+    /* z-index: 3; */
+    color: #fff;
+	/* background-color:#f00; */
+	width: 100%;
+	padding: 0 3vw;
+    text-align: right;
+    /* text-transform: uppercase; */
+    text-shadow: 1px 1px 0 rgba(0,0,0,.75);
+	font-family: 'OpenSansCondLight', 'Titillium Web', Helvetica, Arial, sans-serif;  
+}
+
+.quote-carousel .text1{
+	text-transform: uppercase;
+	font-size: 3.3vw;
+	color: var(--masjid-gold); /* Warna diseragamkan kuning emas */
+}
+/* .quote-carousel .text2:before{
+	display: block;
+    content: "";
+	font-size:10vw;
+	background-image: url(../img/quote.png);
+	background-size: contain;
+	background-position: center center;
+	background-repeat: no-repeat;
+	font-family:  Helvetica, Arial, sans-serif;  
+	position:absolute;
+	top: -1vw;
+	left:-2vw;
+    width: 2vw;
+	height:2vw;
+    margin: 0 1rem;
+} */
+
+.quote-carousel .text2{
+	font-size: 2.9vw;
+	position:relative;
+	font-style:italic;
+}
+.quote-carousel .text3:before{
+	display: block;
+	content: "";
+	position:absolute;
+	height:1vw;
+	width:10vw;
+	top: -1vw;
+	right:0vw;
+	/* background-color:#e2ad0055; */
+	background-image: url(../img/hadist-line.png);
+	background-size: contain;
+	background-position: right center;
+	background-repeat: no-repeat;
+}
+.quote-carousel .text3{
+	margin-top:3vh;
+	font-size: 1.5vw;
+	font-style: italic;
+	position:relative;
+}
+
+/* Custom Fade Transition for Bootstrap Carousel */
+.carousel-fade .carousel-inner .item {
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out !important;
+}
+.carousel-fade .carousel-inner .item,
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+  opacity: 0;
+}
+.carousel-fade .carousel-inner .active,
+.carousel-fade .carousel-inner .next.left,
+.carousel-fade .carousel-inner .prev.right {
+  opacity: 1;
+}
+.carousel-fade .carousel-inner .next,
+.carousel-fade .carousel-inner .prev,
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+  left: 0;
+}
+
+/* Zoom Effect for Carousels */
+.carousel-zoom .carousel-inner .item.active,
+.carousel-zoom .carousel-inner .item.next,
+.carousel-zoom .carousel-inner .item.prev {
+  animation: innerCarouselZoom 10s ease-out forwards;
+}
+@keyframes innerCarouselZoom {
+  0% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* Master Content Slider Styles */
+#content-slider {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    height: auto;
+    z-index: 3;
+}
+
+.content-slide {
+    display: none;
+    width: 100%;
+    animation: slideZoomIn 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+@keyframes slideZoomIn {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.content-slide.active {
+    display: block;
+}
+
+/* Glassmorphism Containers / Cards (Updated) */
+.glass-panel {
+    background: var(--masjid-card);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 1.5vw;
+    padding: 1.5vw;
+    color: var(--masjid-cream);
+    margin: 0 auto;
+    box-shadow: 0 1vw 3vw rgba(0,0,0,0.4);
+}
+.panel-header {
+    margin-bottom: 2vw;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    padding-bottom: 1vw;
+}
+.glass-title {
+    color: var(--masjid-gold);
+    font-size: 2.5vw;
+    font-weight: bold;
+    text-align: left;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+.glass-title i {
+    margin-right: 1vw;
+}
+
+/* Keuangan Dashboard Style */
+.keuangan-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vw;
+}
+.k-hero-saldo {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(5, 26, 16, 0.8) 100%);
+    border: 2px solid var(--masjid-gold);
+    border-radius: 1.5vw;
+    padding: 1.2vw 2vw;
+    text-align: center;
+    box-shadow: 0 1vw 3vw rgba(0,0,0,0.5);
+}
+.saldo-label {
+    display: block;
+    color: var(--masjid-sage);
+    font-size: 1.5vw;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 0.5vw;
+}
+.saldo-amount {
+    margin: 0;
+    color: var(--masjid-gold);
+    font-size: 4.2vw;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    text-shadow: 0 0.5vw 1.5vw rgba(212, 175, 55, 0.3);
+}
+.k-hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1vw;
+    padding-top: 1vw;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+.k-stat {
+    text-align: center;
+    flex: 1;
+}
+.k-stat:not(:last-child) {
+    border-right: 1px solid rgba(212, 175, 55, 0.3);
+}
+.k-stat-label {
+    font-size: 1.2vw;
+    color: var(--masjid-sage);
+    text-transform: uppercase;
+    margin-bottom: 0.5vw;
+}
+.k-stat-val {
+    font-size: 1.8vw;
+    font-weight: bold;
+    color: var(--masjid-cream);
+    font-family: 'Montserrat', sans-serif;
+}
+.k-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6vw;
+}
+.k-history-item {
+    display: flex;
+    align-items: center;
+    background: rgba(5, 26, 16, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 1vw;
+    padding: 0.8vw 1.2vw;
+    transition: transform 0.3s;
+}
+.k-h-icon {
+    font-size: 3vw;
+    margin-right: 1.5vw;
+}
+.k-h-info {
+    flex: 1;
+}
+.k-h-desc {
+    font-size: 1.5vw;
+    font-weight: bold;
+    color: var(--masjid-cream);
+}
+.k-h-date {
+    font-size: 1.2vw;
+    color: var(--masjid-sage);
+}
+.k-h-amount {
+    font-size: 2vw;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+.k-masuk {
+    color: #2ecc71; /* Green */
+}
+.k-keluar {
+    color: #e74c3c; /* Red */
+}
+
+/* Donasi Grid */
+.donasi-grid {
+    display: flex;
+    gap: 2vw;
+    align-items: stretch;
+}
+.donasi-qris, .donasi-bank {
+    flex: 1;
+    background: rgba(5, 26, 16, 0.4);
+    border-radius: 1vw;
+    padding: 1.5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.qris-wrapper {
+    background: #fff;
+    padding: 1vw;
+    border-radius: 1vw;
+    box-shadow: 0 0 1vw rgba(212, 175, 55, 0.5);
+    margin-bottom: 1vw;
+}
+.qris-img {
+    max-width: 12vw;
+    height: auto;
+    border-radius: 0.5vw;
+}
+.donasi-qris p {
+    font-size: 1.5vw;
+    color: var(--masjid-gold);
+    font-weight: bold;
+    margin: 0;
+}
+.bank-card {
+    text-align: center;
+}
+.bank-icon {
+    font-size: 4vw;
+    color: var(--masjid-gold);
+    margin-bottom: 0.5vw;
+}
+.bank-card h3 {
+    color: var(--masjid-sage);
+    font-size: 1.5vw;
+    margin-bottom: 1vw;
+    text-transform: uppercase;
+}
+.bank-name {
+    color: var(--masjid-gold);
+    font-size: 3vw;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+.bank-rek {
+    font-size: 3.5vw;
+    color: var(--masjid-cream);
+    font-family: monospace;
+    letter-spacing: 2px;
+    margin: 1vw 0;
+}
+.bank-an {
+    font-size: 1.8vw;
+    color: var(--masjid-sage);
+    font-style: italic;
+}
+
+/* Kegiatan Grid 2x2 */
+.kegiatan-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+}
+.kegiatan-card-v2 {
+    position: relative;
+    background: linear-gradient(to bottom right, rgba(212, 175, 55, 0.1), rgba(5, 26, 16, 0.6));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 1.5vw;
+    padding: 2vw;
+    display: flex;
+    align-items: flex-start;
+    gap: 2vw;
+    overflow: hidden;
+    box-shadow: 0 0.5vw 2vw rgba(0,0,0,0.4);
+}
+.k-v2-date-badge {
+    background: var(--masjid-gold);
+    color: var(--masjid-bg);
+    border-radius: 1vw;
+    padding: 1vw;
+    min-width: 6vw;
+    text-align: center;
+    box-shadow: 0 0.5vw 1vw rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+}
+.k-v2-date-badge .d {
+    font-size: 3.5vw;
+    font-weight: bold;
+    line-height: 1;
+    font-family: 'Montserrat', sans-serif;
+}
+.k-v2-date-badge .m {
+    font-size: 1.2vw;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 0.2vw;
+}
+.k-v2-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.k-v2-time {
+    font-size: 1.2vw;
+    color: var(--masjid-sage);
+    margin-bottom: 0.5vw;
+    font-weight: bold;
+}
+.k-v2-title {
+    color: var(--masjid-cream);
+    font-size: 2vw;
+    font-weight: bold;
+    margin: 0 0 1vw 0;
+    line-height: 1.2;
+}
+.k-v2-speaker {
+    color: var(--masjid-gold);
+    font-size: 1.5vw;
+    margin: 0;
+    background: rgba(0,0,0,0.3);
+    padding: 0.5vw 1vw;
+    border-radius: 0.5vw;
+    display: inline-block;
+}
+
+/* Galeri Carousel */
+.galeri-container {
+    padding: 0 !important;
+    overflow: hidden;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+.galeri-carousel .item {
+    height: 70vh;
+    border-radius: 1.5vw;
+    overflow: hidden;
+    box-shadow: 0 1vw 3vw rgba(0,0,0,0.5);
+    background: #000;
+}
+.galeri-img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+.galeri-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Intro Slides */
+.intro-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 80%;
+}
+.intro-icon-wrapper {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3vw;
+}
+.intro-icon {
+    font-size: 15vw;
+    color: var(--masjid-gold);
+    text-shadow: 0 0.5vw 2vw rgba(212, 175, 55, 0.4);
+}
+.intro-title {
+    font-size: 5vw;
+    color: var(--masjid-cream);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: 0 1vw 2vw rgba(0,0,0,0.8);
+}
+
+/* Fade Transition for Carousels */
+.carousel-fade .carousel-inner .item {
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 1s;
+}
+.carousel-fade .carousel-inner .active {
+  opacity: 1;
+}
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+}
+.carousel-fade .carousel-inner .next.left,
+.carousel-fade .carousel-inner .prev.right {
+  opacity: 1;
+}
+@media all and (transform-3d), (-webkit-transform-3d) {
+    .carousel-fade .carousel-inner > .item.next,
+    .carousel-fade .carousel-inner > .item.active.right,
+    .carousel-fade .carousel-inner > .item.prev,
+    .carousel-fade .carousel-inner > .item.active.left {
+      opacity: 0;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+    .carousel-fade .carousel-inner > .item.next.left,
+    .carousel-fade .carousel-inner > .item.prev.right,
+    .carousel-fade .carousel-inner > .item.active {
+      opacity: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+}
+
