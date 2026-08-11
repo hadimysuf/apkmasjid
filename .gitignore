@@ -1,0 +1,65 @@
+# Database Data (Dynamic)
+# We ignore the live database so we don't commit local state,
+# but 'database_default.json' should remain tracked.
+db/database.json
+
+# User Uploaded Assets
+# We ignore files uploaded to these directories to keep the repo clean,
+# but we track the .gitkeep files so the folders are created on clone.
+display/galeri/*
+!display/galeri/.gitkeep
+!display/galeri/index.php
+
+display/keuangan/*
+!display/keuangan/.gitkeep
+!display/keuangan/index.php
+
+display/qris/*
+!display/qris/.gitkeep
+!display/qris/index.php
+
+display/wallpaper/*
+!display/wallpaper/.gitkeep
+!display/wallpaper/index.php
+# (Uncomment below if there are default wallpapers you want to track)
+# !display/wallpaper/bg*.jpg
+# !display/wallpaper/default*.jpg
+
+display/logo/*
+!display/logo/.gitkeep
+!display/logo/index.php
+# (Uncomment below if there is a default logo you want to track)
+# !display/logo/logo-default.png
+
+# Custom Sholat Backgrounds (Uploaded by user)
+display/img/bg_adzan_*.png
+display/img/bg_adzan_*.jpg
+display/img/bg_adzan_*.jpeg
+display/img/bg_iqomah_*.png
+display/img/bg_iqomah_*.jpg
+display/img/bg_iqomah_*.jpeg
+display/img/bg_khutbah_*.png
+display/img/bg_khutbah_*.jpg
+display/img/bg_khutbah_*.jpeg
+display/img/bg_sholat_*.png
+display/img/bg_sholat_*.jpg
+display/img/bg_sholat_*.jpeg
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
