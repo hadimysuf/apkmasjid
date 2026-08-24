@@ -293,9 +293,14 @@ class proses extends fb{
 			}
 		}
 		
-		if($index=='no-index')
-			// $db[$id]	= $dt;
-			$db[$id] = array_merge($db[$id],$dt);
+		if($index=='no-index') {
+			if (!isset($db[$id]) || !is_array($db[$id])) {
+				$db[$id] = [];
+			}
+			foreach($dt as $k => $v) {
+				$db[$id][$k] = $v;
+			}
+		}
 		else if($index=='new')
 			$db[$id][]	= $dt;
 		else if($index!='custom')
@@ -400,6 +405,11 @@ class proses extends fb{
 			$this->retError("Minimal harus ada 1 data...");
 		}
 		else{
+			if ($id == 'kegiatan' && isset($db[$id][$index]['gambar']) && !empty($db[$id][$index]['gambar'])) {
+				if (file_exists('display/img/'.$db[$id][$index]['gambar'])) {
+					unlink('display/img/'.$db[$id][$index]['gambar']);
+				}
+			}
 			unset($db[$id][$index]);
 			$db[$id] = array_values($db[$id]);//re-index
 			$this->database = $db;
@@ -515,6 +525,65 @@ class proses extends fb{
 		$this->retSuccess();
 	}
 	
+	private function hapusGambarKegiatan(){
+		$db = $this->database;
+		$index = isset($_POST['index']) ? $_POST['index'] : '';
+		if($index !== '' && isset($db['kegiatan'][$index])) {
+			if(!empty($db['kegiatan'][$index]['gambar']) && file_exists('display/img/'.$db['kegiatan'][$index]['gambar'])){
+				unlink('display/img/'.$db['kegiatan'][$index]['gambar']);
+			}
+			$db['kegiatan'][$index]['gambar'] = '';
+			$this->database = $db;
+			$this->saveDatabase();
+		}
+		$this->retSuccess();
+	}
+	
+	private function saveKegiatan(){
+		$db = $this->database;
+		$index = isset($_POST['index']) ? $_POST['index'] : 'new';
+		
+		$dt = [
+			'tanggal' => $_POST['tanggal'],
+			'waktu' => $_POST['waktu'],
+			'kegiatan' => $_POST['kegiatan'],
+			'pemateri' => $_POST['pemateri'],
+			'active' => isset($_POST['active']) ? $_POST['active'] : 1,
+			'mode' => isset($_POST['mode']) ? $_POST['mode'] : 'teks',
+			'gambar' => isset($db['kegiatan'][$index]['gambar']) ? $db['kegiatan'][$index]['gambar'] : ''
+		];
+		
+		if(isset($_FILES['gambar']) && $_FILES['gambar']['size'] > 0){
+			$file = $_FILES['gambar'];
+			$allowed_ext = array('jpg', 'jpeg', 'png');
+			if($file['size'] > 5242880) {
+				$this->retError($file['name']." ukurannya melebihi 5MB.");
+			}
+			$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+			if(!in_array($ext,$allowed_ext) ) {
+				$this->retError($file['name']." tidak didukung\nExt yang diperbolehkan : ".implode(", ",$allowed_ext));
+			} else {
+				$filename = 'kegiatan_'.time().'.'.$ext;
+				move_uploaded_file($file['tmp_name'], "display/img/".$filename);
+				
+				if(!empty($dt['gambar']) && file_exists('display/img/'.$dt['gambar'])){
+					unlink('display/img/'.$dt['gambar']);
+				}
+				$dt['gambar'] = $filename;
+			}
+		}
+		
+		if($index == 'new') {
+			$db['kegiatan'][] = $dt;
+		} else {
+			$db['kegiatan'][$index] = $dt;
+		}
+		
+		$this->database = $db;
+		$this->saveDatabase();
+		$this->retSuccess();
+	}
+	
 	/* *****************************************************************************************************************
 	 * *** VIEW
 	 * *****************************************************************************************************************/
@@ -614,19 +683,36 @@ class proses extends fb{
 		$db	= $this->database;
 		$id	= 'kegiatan';
 		ob_start();
-		$db[$id]['new']	= ['tanggal'=>date('Y-m-d'), 'waktu'=>'18:00', 'kegiatan'=>'', 'pemateri'=>''];
+		$db[$id]['new']	= ['tanggal'=>date('Y-m-d'), 'waktu'=>'18:00', 'kegiatan'=>'', 'pemateri'=>'', 'active'=>1, 'mode'=>'teks', 'gambar'=>''];
 		echo '<section class="content-header content-dynamic"><div class="row"><div class="col-md-12 col-sm-12 col-xs-12">';
 		foreach($db[$id] as $k => $v){
 			$title	= is_int($k)?'Agenda '.($k+1):'Agenda Baru';
 			$delBtn	= is_int($k)?'<button type="button" class="btn btn-danger delete"><i class="fa fa-trash" aria-hidden="true"></i> hapus</button>':'';
+			
+			// Set defaults for existing data without these keys
+			$v['active'] = isset($v['active']) ? $v['active'] : 1;
+			$v['mode'] = isset($v['mode']) ? $v['mode'] : 'teks';
+			$v['gambar'] = isset($v['gambar']) ? $v['gambar'] : '';
+			
+			$selAktif1 = ($v['active'] == 1) ? 'selected' : '';
+			$selAktif0 = ($v['active'] == 0) ? 'selected' : '';
+			$selModeTeks = ($v['mode'] == 'teks') ? 'selected' : '';
+			$selModeGbr = ($v['mode'] == 'gambar') ? 'selected' : '';
 			?>
-			<form method="post" class="form">
+			<form method="post" class="form-file">
 			<div class="box box-warning">
 				<div class="box-header with-border">
 					<h3 class="box-title"><?=$title?></h3>
 					<div class="box-tools pull-right"><button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button></div>
 				</div>
 				<div class="box-body">
+					<div class="input-group">
+					  <span class="input-group-addon">Status</span>
+					  <select name="active" class="form-control">
+					  	<option value="1" <?=$selAktif1?>>Aktif (Tampilkan)</option>
+					  	<option value="0" <?=$selAktif0?>>Non-Aktif (Sembunyikan)</option>
+					  </select>
+					</div>
 					<div class="input-group">
 					  <span class="input-group-addon">Tanggal</span>
 					  <input name="tanggal" type="date" class="form-control" value="<?=$v['tanggal']?>" required>
@@ -643,6 +729,28 @@ class proses extends fb{
 					  <span class="input-group-addon">Pemateri</span>
 					  <input name="pemateri" type="text" maxlength="100" class="form-control" value="<?=$v['pemateri']?>">
 					</div>
+					<div class="input-group">
+					  <span class="input-group-addon">Mode Tampilan</span>
+					  <select name="mode" class="form-control">
+					  	<option value="teks" <?=$selModeTeks?>>Teks Saja</option>
+					  	<option value="gambar" <?=$selModeGbr?>>Gambar Saja (Jika Diupload)</option>
+					  </select>
+					</div>
+					<div class="input-group">
+					  <span class="input-group-addon">Upload Gambar</span>
+					  <input name="gambar" type="file" class="form-control" data-proses="saveKegiatan" accept="image/*">
+					</div>
+					<?php if(!empty($v['gambar']) && file_exists('display/img/'.$v['gambar'])): ?>
+					<div style="margin-top:10px;">
+						<label>Gambar Saat Ini:</label><br>
+						<img src="display/img/<?=$v['gambar']?>" style="max-height:100px; border-radius:5px; margin-bottom:10px;">
+						<div>
+							<button type="button" class="btn btn-xs btn-danger" onclick="hapusGambarKegiatan('<?=$k?>')">
+								<i class="fa fa-trash"></i> Hapus Gambar Ini
+							</button>
+						</div>
+					</div>
+					<?php endif; ?>
 					<div class="form-group">
 						<input type="hidden" name="formId" value="<?=$id?>">
 						<input type="hidden" name="index" value="<?=$k?>">
@@ -657,6 +765,21 @@ class proses extends fb{
 			<?php
 		}
 		echo '</div></div></section>';
+		echo '<script>
+		function hapusGambarKegiatan(index) {
+			if(confirm("Yakin ingin menghapus gambar ini?")) {
+				var $btn = $(event.target).closest("button");
+				$btn.html("<i class=\'fa fa-spinner fa-pulse\'></i> Hapus...");
+				$.post("proses.php", {id: "hapusGambarKegiatan", index: index}, function(res){
+					if(res.success) {
+						app.showMenu("kegiatan");
+					} else {
+						alert("Gagal menghapus gambar.");
+					}
+				}, "json");
+			}
+		}
+		</script>';
 		$this->data = ob_get_clean();
 		$this->retSuccess();
 	}

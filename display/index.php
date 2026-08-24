@@ -89,6 +89,9 @@ foreach ($files as $v) {
 	<div id="display-adzan" class="full-screen" style="display:none">
 		<div></div>
 	</div>
+	<div id="display-khutbah" class="full-screen" style="display:none">
+		<div></div>
+	</div>
 	<div id="display-sholat" class="full-screen" style="display:none"></div>
 	<div class="carousel carousel-fade fade-carousel slide" data-ride="carousel" data-interval="<?= $wallpaper_timer ?>">
 		<!-- Overlay -->
@@ -317,7 +320,15 @@ foreach ($files as $v) {
 						</div>
 						<div class="kegiatan-grid-2x2">
 							<?php
-							$kegiatan = array_slice($db['kegiatan'], 0, 4); // Max 4 items
+							$kegiatanRaw = $db['kegiatan'];
+							$kegiatan = array();
+							foreach($kegiatanRaw as $kr) {
+								$kr['active'] = isset($kr['active']) ? $kr['active'] : 1;
+								if($kr['active'] == 1) {
+									$kegiatan[] = $kr;
+								}
+							}
+							$kegiatan = array_slice($kegiatan, 0, 4); // Max 4 items
 							$bulanSingkat = array("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des");
 							foreach ($kegiatan as $k) {
 								$t = strtotime($k['tanggal']);
@@ -325,18 +336,36 @@ foreach ($files as $v) {
 								$m = $bulanSingkat[date('n', $t) - 1]; // Menggunakan bulan singkat Indonesia
 								$y = date('Y', $t);
 								$waktu = date('H:i', strtotime($k['waktu']));
-								echo "
-								<div class='kegiatan-card-v2'>
-									<div class='k-v2-date-badge'>
-										<span class='d'>{$d}</span>
-										<span class='m'>{$m}</span>
-									</div>
-									<div class='k-v2-content'>
-										<div class='k-v2-time'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
-										<h3 class='k-v2-title'>{$k['kegiatan']}</h3>
-										<p class='k-v2-speaker'>Bersama: <strong>{$k['pemateri']}</strong></p>
-									</div>
-								</div>";
+								$mode = isset($k['mode']) ? $k['mode'] : 'teks';
+								
+								if($mode == 'gambar' && !empty($k['gambar']) && file_exists('img/'.$k['gambar'])) {
+									echo "
+									<div class='kegiatan-card-v2'>
+										<div class='k-v2-date-badge'>
+											<span class='d'>{$d}</span>
+											<span class='m'>{$m}</span>
+										</div>
+										<div class='k-v2-content' style='flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; overflow: hidden;'>
+											<div class='k-v2-time' style='margin-bottom: 0.5vw;'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
+											<div style='flex: 1; width: 100%; display: flex; align-items: center; justify-content: flex-start;'>
+												<img src='img/{$k['gambar']}' style='max-width: 100%; max-height: 12vw; object-fit: contain; object-position: left center; border-radius: 0.5vw; box-shadow: 0 0.3vw 1vw rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);' />
+											</div>
+										</div>
+									</div>";
+								} else {
+									echo "
+									<div class='kegiatan-card-v2'>
+										<div class='k-v2-date-badge'>
+											<span class='d'>{$d}</span>
+											<span class='m'>{$m}</span>
+										</div>
+										<div class='k-v2-content'>
+											<div class='k-v2-time'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
+											<h3 class='k-v2-title'>{$k['kegiatan']}</h3>
+											<p class='k-v2-speaker'>Bersama: <strong>{$k['pemateri']}</strong></p>
+										</div>
+									</div>";
+								}
 							}
 							?>
 						</div>
@@ -607,10 +636,18 @@ foreach ($files as $v) {
 
 				// console.log(jamSekarang.format('YYYY-MM-DD HH:mm:ss'));
 				if (jamDelay > app.isha) {
-					jadwalDipakeapp = app.jadwalBesok;
+					jadwalDipake = app.jadwalBesok;
 					jadwalPlusIcon = '<span><i class="fa fa-plus" aria-hidden="true"></i></span>';
 					// console.log('besok');
 				}
+				
+				let checkHariJumat = (jamDelay > app.isha) ? moment().add(1, 'days') : jamSekarang;
+				if (checkHariJumat.format('dddd') === 'Friday' && (app.db.jumat.active === true || app.db.jumat.active == 1)) {
+					app.db.prayName['dhuhr'] = "Salat Jum'at";
+				} else {
+					app.db.prayName['dhuhr'] = "Dzuhur";
+				}
+				
 				$.each(app.db.prayName, function(k, v) {
 					// console.log(jamDelay.format('YYYY-MM-DD HH:mm:ss'));
 					let css = '';
@@ -619,7 +656,11 @@ foreach ($files as $v) {
 					else if (k == 'asr' && jamDelay < app.asr && jamDelay > app.dhuhr) css = 'active';
 					else if (k == 'dhuhr' && jamDelay < app.dhuhr && jamDelay > app.fajr) css = 'active';
 					else if (k == 'fajr' && (jamDelay < app.fajr || jamDelay > app.isha)) css = 'active'; //diatas isha dan sebelum subuh (beda hari)
-					jadwal += '<div class="row ' + css + '"><div class="col-xs-5">' + v + '</div><div class="col-xs-7">' + jadwalDipake[k] + jadwalPlusIcon + '</div></div>';
+					
+					let sidebarName = v;
+					if (k === 'dhuhr') sidebarName = "Dzuhur";
+					
+					jadwal += '<div class="row ' + css + '"><div class="col-xs-5">' + sidebarName + '</div><div class="col-xs-7">' + jadwalDipake[k] + jadwalPlusIcon + '</div></div>';
 				});
 				$('#jadwal').html(jadwal);
 			},

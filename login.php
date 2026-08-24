@@ -49,8 +49,10 @@ if (file_exists($file)) {
 					<span class="form-control-feedback"><i class="fa fa-unlock-alt" aria-hidden="true"></i></span>
 				</div>
 				<div class="row" style="margin-top:50px">
-					<div class="col-xs-8"></div>
-					<div class="col-xs-4">
+					<div class="col-xs-6">
+						<a href="display/index.php" class="btn btn-success btn-block btn-flat"><i class="fa fa-desktop" aria-hidden="true"></i> TV Display</a>
+					</div>
+					<div class="col-xs-6">
 						<button type="submit" class="btn btn-primary btn-block btn-flat"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</button>
 					</div>
 				</div>

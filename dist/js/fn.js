@@ -208,9 +208,9 @@ var app = {
 				},300);
 				
 				// $('.sidebar-menu a[data-target='+arr['formId']+']').parent().trigger( "click" );
-			}).fail(function(msg){
-				alert(msg.status+"\n"+msg.statusText);
-				// $('#container').html("Error...");
+			}).fail(function(xhr, status, error){
+				alert("Error: " + xhr.status + " " + xhr.statusText + "\nResponse: " + xhr.responseText);
+				$btn.html(btnText).removeAttr('disabled');
 			});
 			
 			
@@ -219,36 +219,34 @@ var app = {
 		
 		//upload wallpaper
 		$(document).on('submit','form.form-file',function(event){
-			var verification	= false;
+			var verification	= true; // SET TO TRUE to allow optional file uploads
 			var form_data 		= new FormData(this);
 			// form_data.append('id', 'formFileSave');
 			$(this).find(".form-control").each(function(){
-				// console.log(this);
-				// console.log($(this).data('proses'));
-				form_data.append('id', $(this).data('proses'));
+				// append id only if data-proses exists to avoid undefined
+				if ($(this).data('proses')) {
+					form_data.set('id', $(this).data('proses'));
+				}
 				if($(this).attr('type')=='file'){
 					files 	=  this.files;
-					for (i = 0; i < files.length; i++) {
-						if(i>4){
-							alert('Maksimal 5 file sekali upload...');
-							verification = false;
-							return;
+					if(files.length > 0) {
+						for (i = 0; i < files.length; i++) {
+							if(i>4){
+								alert('Maksimal 5 file sekali upload...');
+								verification = false;
+								return false; // break loop
+							}
+							else if(files[i].size > 5242880){
+								alert(files[i].name+' melebihi ukuran maksimal 5Mb');
+								verification = false;
+								return false; // break loop
+							}
+							// console.log(files[i]);
+							form_data.append('file' + i, files[i]);
 						}
-						else if(files[i].size > 5242880){
-							alert(files[i].name+' melebihi ukuran maksimal 5Mb');
-							verification = false;
-							return;
-						}
-						/* cek di server
-						else if (files[i].type!="image/jpeg") {
-							alert(files[i].name+' : ext file bukan jpg');
-							verification = false;
-							return;
-						}
-						*/
-						// console.log(files[i]);
-						form_data.append('file' + i, files[i]);
-						verification = true;
+					} else {
+						// Optional: If this specific form REQUIRED a file, we could set verification = false here.
+						// But since we want to support mixed forms (text + optional file), we leave it true.
 					}
 				}
 			
@@ -282,8 +280,9 @@ var app = {
 							$btn.html(btnText).removeAttr('disabled');
 						}
 					},300);
-				}).fail(function(msg){
-					alert(msg.status+"\n"+msg.statusText);
+				}).fail(function(xhr, status, error){
+					alert("Error: " + xhr.status + " " + xhr.statusText + "\nResponse: " + xhr.responseText);
+					$btn.html(btnText).removeAttr('disabled');
 				});
 				event.preventDefault();
 			}
