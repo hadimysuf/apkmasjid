@@ -358,6 +358,45 @@ var app = {
 				});
 			}
 		});
+
+		//hapus item tabel (contoh bumper)
+		$(document).on('click', '.delete-item', function(event) {
+			if (confirm('Konfirmasi menghapus?')) {
+				var $btn = $(this);
+				var formId = $btn.data('id');
+				var index = $btn.data('index');
+				var btnText = $btn.html();
+				
+				var arr = {
+					formId: formId,
+					index: index
+				};
+				
+				$btn.html('<i class="fa fa-spinner fa-pulse"></i> loading...').attr('disabled', 'disabled');
+				
+				$.ajax({
+					type: "POST",
+					url: "proses.php",
+					dataType: "json",
+					data: {id: 'formDelete', dt: arr}
+				}).done(function(dt) {
+					app.cekRegistered(dt.registered);
+					if (dt.success) {
+						$btn.html('<i class="fa fa-check"></i> dihapus');
+						setTimeout(function() {
+							$('.sidebar-menu .active a').trigger("click");
+						}, 300);
+					} else {
+						alert(dt.data || dt.msg || "Gagal menghapus.");
+						$btn.html(btnText).removeAttr('disabled');
+					}
+				}).fail(function(jqXHR, textStatus, errorThrown) {
+					console.error("AJAX Error:", textStatus, errorThrown);
+					alert("Terjadi kesalahan sistem saat menghapus data.");
+					$btn.html(btnText).removeAttr('disabled');
+				});
+			}
+		});
 		
 		//change prayTimes method
 		$(document).on('change','#prayTimesMethod',function(){

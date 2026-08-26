@@ -50,7 +50,7 @@ class proses extends fb{
 		if($this->dt=='KONFIRMASI'){
 			$file	= $this->file;
 			if (file_exists($file)){
-				unlink($file);
+				@unlink($file);
 				$this->getDatabase();
 				$this->logout();
 			}
@@ -360,7 +360,7 @@ class proses extends fb{
 					else {
 						// tricky ==> kalo replace file logo.png ==> file di browser masih kesimpen di cache ==> ngeselin	
 						$oldLogo	= 'display/logo/'.$this->getLogo();
-						if(file_exists($oldLogo)) unlink($oldLogo);
+						if(file_exists($oldLogo)) @unlink($oldLogo);
 						move_uploaded_file($file['tmp_name'], "display/logo/".time().'.'.$ext);
 						// move_uploaded_file($file['tmp_name'], "display/img/logo.".$ext);//ganti logo masih kesimpen  di cache browser
 					}
@@ -392,7 +392,12 @@ class proses extends fb{
 			$dir	= 'display/wallpaper/';
 			$file	= $this->dt;
 			// $this->retError($file);die;
-			if(file_exists($dir.$file)) unlink($dir.$file);
+			if(file_exists($dir.$file)) {
+				if(!@unlink($dir.$file)) {
+					$this->retError("Gagal menghapus file (Permission denied). Pastikan folder memiliki izin Write (chmod 777).");
+					return;
+				}
+			}
 			$this->retSuccess();
 		}
 	}
@@ -407,7 +412,7 @@ class proses extends fb{
 		else{
 			if ($id == 'kegiatan' && isset($db[$id][$index]['gambar']) && !empty($db[$id][$index]['gambar'])) {
 				if (file_exists('display/img/'.$db[$id][$index]['gambar'])) {
-					unlink('display/img/'.$db[$id][$index]['gambar']);
+					@unlink('display/img/'.$db[$id][$index]['gambar']);
 				}
 			}
 			unset($db[$id][$index]);
@@ -454,7 +459,7 @@ class proses extends fb{
 					} else {
 						$db = $this->database;
 						if(!empty($db['donasi']['qris']) && file_exists('display/qris/'.$db['donasi']['qris'])){
-							unlink('display/qris/'.$db['donasi']['qris']);
+							@unlink('display/qris/'.$db['donasi']['qris']);
 						}
 						$filename = time().'.'.$ext;
 						move_uploaded_file($file['tmp_name'], "display/qris/".$filename);
@@ -477,7 +482,12 @@ class proses extends fb{
 	private function galeriDelete(){
 		$dir	= 'display/galeri/';
 		$file	= $this->dt;
-		if(file_exists($dir.$file)) unlink($dir.$file);
+		if(file_exists($dir.$file)) {
+			if(!@unlink($dir.$file)) {
+				$this->retError("Gagal menghapus file (Permission denied). Pastikan folder memiliki izin Write (chmod 777).");
+				return;
+			}
+		}
 		$this->retSuccess();
 	}
 	
@@ -499,7 +509,7 @@ class proses extends fb{
 						
 						$db = $this->database;
 						if(!empty($db['laporan_keuangan_img']) && file_exists('display/keuangan/'.$db['laporan_keuangan_img'])){
-							unlink('display/keuangan/'.$db['laporan_keuangan_img']);
+							@unlink('display/keuangan/'.$db['laporan_keuangan_img']);
 						}
 						
 						$db['laporan_keuangan_img'] = $filename;
@@ -516,7 +526,7 @@ class proses extends fb{
 		$db = $this->database;
 		if(!empty($db['laporan_keuangan_img'])){
 			if(file_exists('display/keuangan/'.$db['laporan_keuangan_img'])) {
-				unlink('display/keuangan/'.$db['laporan_keuangan_img']);
+				@unlink('display/keuangan/'.$db['laporan_keuangan_img']);
 			}
 			unset($db['laporan_keuangan_img']);
 			$this->database = $db;
@@ -530,7 +540,7 @@ class proses extends fb{
 		$index = isset($_POST['index']) ? $_POST['index'] : '';
 		if($index !== '' && isset($db['kegiatan'][$index])) {
 			if(!empty($db['kegiatan'][$index]['gambar']) && file_exists('display/img/'.$db['kegiatan'][$index]['gambar'])){
-				unlink('display/img/'.$db['kegiatan'][$index]['gambar']);
+				@unlink('display/img/'.$db['kegiatan'][$index]['gambar']);
 			}
 			$db['kegiatan'][$index]['gambar'] = '';
 			$this->database = $db;
@@ -567,7 +577,7 @@ class proses extends fb{
 				move_uploaded_file($file['tmp_name'], "display/img/".$filename);
 				
 				if(!empty($dt['gambar']) && file_exists('display/img/'.$dt['gambar'])){
-					unlink('display/img/'.$dt['gambar']);
+					@unlink('display/img/'.$dt['gambar']);
 				}
 				$dt['gambar'] = $filename;
 			}
@@ -1193,7 +1203,23 @@ class proses extends fb{
 				'arr'	=> $arrActive,
 				'value'	=> $tarawih['active']
 			],
-			'durasi'	=>[
+			'durasi_jeda_khutbah'	=>[
+				'name'	=> 'jeda',
+				'type'	=> 'number',
+				'min'	=> 1,
+				'max'	=> 180,
+				'step'	=> 1,
+				'value'	=> isset($tarawih['jeda']) ? $tarawih['jeda'] : 15,
+				'required'	=> true,
+				'addon'	=> 'menit'
+			],
+			'teks_khutbah'	=>[
+				'name'	=> 'text',
+				'type'	=> 'text',
+				'value'	=> isset($tarawih['text']) ? $tarawih['text'] : 'Harap tenang, ceramah tarawih sedang berlangsung',
+				'required'	=> true
+			],
+			'durasi_sholat_tarawih'	=>[
 				'name'	=> 'duration',
 				'type'	=> 'number',
 				'min'	=> 1,
@@ -1416,7 +1442,7 @@ class proses extends fb{
 						if(!isset($db['latar'])) $db['latar'] = ['khutbah'=>'', 'adzan'=>'', 'iqomah'=>'', 'sholat'=>''];
 						
 						if(!empty($db['latar'][$formId]) && file_exists('display/img/'.$db['latar'][$formId])){
-							unlink('display/img/'.$db['latar'][$formId]);
+							@unlink('display/img/'.$db['latar'][$formId]);
 						}
 						
 						$db['latar'][$formId] = $filename;
@@ -1435,7 +1461,7 @@ class proses extends fb{
 		if(in_array($formId, ['khutbah', 'adzan', 'iqomah', 'sholat'])){
 			if(!empty($db['latar'][$formId])){
 				if(file_exists('display/img/'.$db['latar'][$formId])) {
-					unlink('display/img/'.$db['latar'][$formId]);
+					@unlink('display/img/'.$db['latar'][$formId]);
 				}
 				$db['latar'][$formId] = '';
 				$this->database = $db;
@@ -2396,4 +2422,4 @@ isha		= 18°
 	
 }
 $request=isset($_POST['id'])?$_POST['id']:"UNKNOWN_REQUEST_________________________________________";
-new proses($request);
+new proses($request);

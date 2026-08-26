@@ -56,17 +56,30 @@ foreach ($files as $v) {
 	<link href="css/font-awesome.min.css" rel="stylesheet">
 	<link href="css/style.css" rel="stylesheet">
 	<style>
-		<?php if(!empty($db['latar']['khutbah'])): ?>
-		#display-khutbah { background-image: url('img/<?=$db['latar']['khutbah']?>') !important; background-size: contain !important; background-position: center !important; }
-		<?php endif; ?>
-		<?php if(!empty($db['latar']['adzan'])): ?>
-		#display-adzan { background-image: url('img/<?=$db['latar']['adzan']?>') !important; background-size: contain !important; background-position: center !important; }
-		<?php endif; ?>
-		<?php if(!empty($db['latar']['iqomah'])): ?>
-		#count-down { background-image: url('img/<?=$db['latar']['iqomah']?>') !important; background-size: contain !important; background-position: center !important; }
-		<?php endif; ?>
-		<?php if(!empty($db['latar']['sholat'])): ?>
-		#display-sholat { background-image: url('img/<?=$db['latar']['sholat']?>') !important; background-size: contain !important; background-position: center !important; }
+		<?php if (!empty($db['latar']['khutbah'])): ?>#display-khutbah {
+			background-image: url('img/<?= $db['latar']['khutbah'] ?>') !important;
+			background-size: cover !important;
+			background-position: center !important;
+		}
+
+		<?php endif; ?><?php if (!empty($db['latar']['adzan'])): ?>#display-adzan {
+			background-image: url('img/<?= $db['latar']['adzan'] ?>') !important;
+			background-size: cover !important;
+			background-position: center !important;
+		}
+
+		<?php endif; ?><?php if (!empty($db['latar']['iqomah'])): ?>#count-down {
+			background-image: url('img/<?= $db['latar']['iqomah'] ?>') !important;
+			background-size: cover !important;
+			background-position: center !important;
+		}
+
+		<?php endif; ?><?php if (!empty($db['latar']['sholat'])): ?>#display-sholat {
+			background-image: url('img/<?= $db['latar']['sholat'] ?>') !important;
+			background-size: cover !important;
+			background-position: center !important;
+		}
+
 		<?php endif; ?>
 	</style>
 </head>
@@ -209,66 +222,66 @@ foreach ($files as $v) {
 			if (!empty($db['keuangan'])):
 			?>
 				<div class="content-slide" id="slide-keuangan" data-timer="<?= $db['timer']['keuangan'] * 1000 ?>">
-					<div class="glass-panel keuangan-container" style="height: 100%; display: flex; flex-direction: column; box-sizing: border-box;">
-						<div class="panel-header">
+					<div class="glass-panel keuangan-container" style="margin-top: -2.5vh;">
+						<div class="panel-header" style="margin-bottom: 1vw; padding-bottom: 0.5vw;">
 							<h2 class="glass-title">Ringkasan Keuangan</h2>
 						</div>
-						<?php if(!empty($db['laporan_keuangan_img']) && file_exists('keuangan/'.$db['laporan_keuangan_img'])): ?>
-							<div style="flex: 1; text-align: center; overflow: hidden; padding: 0 20px 20px 20px;">
-								<img src="keuangan/<?= $db['laporan_keuangan_img'] ?>?v=<?=time()?>" style="width: 100%; max-height: 55vh; object-fit: contain; border-radius: 10px;">
+						<?php if (!empty($db['laporan_keuangan_img']) && file_exists('keuangan/' . $db['laporan_keuangan_img'])): ?>
+							<div style="text-align: center; overflow: hidden; padding: 0 5px 5px 5px;">
+								<img src="keuangan/<?= $db['laporan_keuangan_img'] ?>?v=<?= time() ?>" style="width: 100%; max-height: 56vh; object-fit: contain; border-radius: 10px;">
 							</div>
 						<?php else: ?>
-						<div class="keuangan-dashboard">
-							<?php
-							$currentMonth = date('Y-m');
-							$kas_awal = 0;
-							$kas_masuk = 0;
-							$kas_keluar = 0;
-							$kas_akhir = 0;
+							<div class="keuangan-dashboard">
+								<?php
+								$currentMonth = date('Y-m');
+								$kas_awal = 0;
+								$kas_masuk = 0;
+								$kas_keluar = 0;
+								$kas_akhir = 0;
 
-							foreach ($db['keuangan'] as $k) {
-								$isPemasukan = $k['jenis'] == 'Pemasukan';
-								$nominal = $k['nominal'];
-								$trxMonth = date('Y-m', strtotime($k['tanggal']));
+								foreach ($db['keuangan'] as $k) {
+									$isPemasukan = $k['jenis'] == 'Pemasukan';
+									$nominal = $k['nominal'];
+									$trxMonth = date('Y-m', strtotime($k['tanggal']));
 
-								if ($trxMonth < $currentMonth) {
-									// Transaksi bulan sebelumnya menjadi Kas Awal bulan ini
-									if ($isPemasukan) $kas_awal += $nominal;
-									else $kas_awal -= $nominal;
-								} elseif ($trxMonth == $currentMonth) {
-									// Transaksi bulan ini
-									if ($isPemasukan) $kas_masuk += $nominal;
-									else $kas_keluar += $nominal;
+									if ($trxMonth < $currentMonth) {
+										// Transaksi bulan sebelumnya menjadi Kas Awal bulan ini
+										if ($isPemasukan) $kas_awal += $nominal;
+										else $kas_awal -= $nominal;
+									} elseif ($trxMonth == $currentMonth) {
+										// Transaksi bulan ini
+										if ($isPemasukan) $kas_masuk += $nominal;
+										else $kas_keluar += $nominal;
+									}
 								}
-							}
-							$kas_akhir = $kas_awal + $kas_masuk - $kas_keluar;
+								$kas_akhir = $kas_awal + $kas_masuk - $kas_keluar;
 
-							$bulanIndo = array("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
-							$bulan = $bulanIndo[date('n') - 1];
-							$tahun = date('Y');
-							$periode = strtoupper($bulan . " " . $tahun);
-							?>
-							<div class="k-hero-saldo">
-								<div class="k-hero-top">
-									<span class="saldo-label">TOTAL SALDO KAS PER <?= $periode ?></span>
-									<h1 class="saldo-amount">Rp <?= number_format($kas_akhir, 0, ',', '.') ?></h1>
-								</div>
-								<div class="k-hero-bottom">
-									<div class="k-stat">
-										<div class="k-stat-label">Kas Awal</div>
-										<div class="k-stat-val">Rp <?= number_format($kas_awal, 0, ',', '.') ?></div>
+								$bulanIndo = array("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+								$bulan = $bulanIndo[date('n') - 1];
+								$tahun = date('Y');
+								$periode = strtoupper($bulan . " " . $tahun);
+								?>
+								<div class="k-hero-saldo">
+									<div class="k-hero-top">
+										<span class="saldo-label">TOTAL SALDO KAS PER <?= $periode ?></span>
+										<h1 class="saldo-amount">Rp <?= number_format($kas_akhir, 0, ',', '.') ?></h1>
 									</div>
-									<div class="k-stat">
-										<div class="k-stat-label">Pemasukan</div>
-										<div class="k-stat-val k-masuk">Rp <?= number_format($kas_masuk, 0, ',', '.') ?></div>
-									</div>
-									<div class="k-stat">
-										<div class="k-stat-label">Pengeluaran</div>
-										<div class="k-stat-val k-keluar">Rp <?= number_format($kas_keluar, 0, ',', '.') ?></div>
+									<div class="k-hero-bottom">
+										<div class="k-stat">
+											<div class="k-stat-label">Kas Awal</div>
+											<div class="k-stat-val">Rp <?= number_format($kas_awal, 0, ',', '.') ?></div>
+										</div>
+										<div class="k-stat">
+											<div class="k-stat-label">Pemasukan</div>
+											<div class="k-stat-val k-masuk">Rp <?= number_format($kas_masuk, 0, ',', '.') ?></div>
+										</div>
+										<div class="k-stat">
+											<div class="k-stat-label">Pengeluaran</div>
+											<div class="k-stat-val k-keluar">Rp <?= number_format($kas_keluar, 0, ',', '.') ?></div>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -322,9 +335,9 @@ foreach ($files as $v) {
 							<?php
 							$kegiatanRaw = $db['kegiatan'];
 							$kegiatan = array();
-							foreach($kegiatanRaw as $kr) {
+							foreach ($kegiatanRaw as $kr) {
 								$kr['active'] = isset($kr['active']) ? $kr['active'] : 1;
-								if($kr['active'] == 1) {
+								if ($kr['active'] == 1) {
 									$kegiatan[] = $kr;
 								}
 							}
@@ -337,8 +350,8 @@ foreach ($files as $v) {
 								$y = date('Y', $t);
 								$waktu = date('H:i', strtotime($k['waktu']));
 								$mode = isset($k['mode']) ? $k['mode'] : 'teks';
-								
-								if($mode == 'gambar' && !empty($k['gambar']) && file_exists('img/'.$k['gambar'])) {
+
+								if ($mode == 'gambar' && !empty($k['gambar']) && file_exists('img/' . $k['gambar'])) {
 									echo "
 									<div class='kegiatan-card-v2'>
 										<div class='k-v2-date-badge'>
@@ -640,14 +653,14 @@ foreach ($files as $v) {
 					jadwalPlusIcon = '<span><i class="fa fa-plus" aria-hidden="true"></i></span>';
 					// console.log('besok');
 				}
-				
+
 				let checkHariJumat = (jamDelay > app.isha) ? moment().add(1, 'days') : jamSekarang;
 				if (checkHariJumat.format('dddd') === 'Friday' && (app.db.jumat.active === true || app.db.jumat.active == 1)) {
 					app.db.prayName['dhuhr'] = "Salat Jum'at";
 				} else {
 					app.db.prayName['dhuhr'] = "Dzuhur";
 				}
-				
+
 				$.each(app.db.prayName, function(k, v) {
 					// console.log(jamDelay.format('YYYY-MM-DD HH:mm:ss'));
 					let css = '';
@@ -656,10 +669,10 @@ foreach ($files as $v) {
 					else if (k == 'asr' && jamDelay < app.asr && jamDelay > app.dhuhr) css = 'active';
 					else if (k == 'dhuhr' && jamDelay < app.dhuhr && jamDelay > app.fajr) css = 'active';
 					else if (k == 'fajr' && (jamDelay < app.fajr || jamDelay > app.isha)) css = 'active'; //diatas isha dan sebelum subuh (beda hari)
-					
+
 					let sidebarName = v;
 					if (k === 'dhuhr') sidebarName = "Dzuhur";
-					
+
 					jadwal += '<div class="row ' + css + '"><div class="col-xs-5">' + sidebarName + '</div><div class="col-xs-7">' + jadwalDipake[k] + jadwalPlusIcon + '</div></div>';
 				});
 				$('#jadwal').html(jadwal);
@@ -675,11 +688,20 @@ foreach ($files as $v) {
 					let iqomahEnd = moment(iqomahStart).add(app.db.iqomah[k], 'minutes');
 
 					let isJumat = (now.format('dddd') === 'Friday' && (app.db.jumat.active === true || app.db.jumat.active == 1) && k === 'dhuhr');
+					let isTarawih = (k === 'isha' && (app.db.tarawih.active === true || app.db.tarawih.active == 1));
+
 					let khutbahEnd = moment(iqomahStart).add(app.db.jumat.duration, 'minutes');
 
 					let sholatStart = isJumat ? khutbahEnd : iqomahEnd;
-					let sholatDuration = (k === 'isha' && (app.db.tarawih.active === true || app.db.tarawih.active == 1)) ? app.db.tarawih.duration : app.db.timer.sholat;
+					let sholatDuration = app.db.timer.sholat;
 					let sholatEnd = moment(sholatStart).add(sholatDuration, 'minutes');
+
+					let khutbahTarawihEnd = sholatEnd;
+					let sholatTarawihEnd = sholatEnd;
+					if (isTarawih) {
+						khutbahTarawihEnd = moment(sholatEnd).add(app.db.tarawih.jeda, 'minutes');
+						sholatTarawihEnd = moment(khutbahTarawihEnd).add(app.db.tarawih.duration, 'minutes');
+					}
 
 					// Cek posisi waktu sekarang (now) ada di tahap mana, agar tidak reset saat direfresh
 					if (now.isBetween(waitAdzanStart, adzanStart, null, '[)')) {
@@ -688,12 +710,18 @@ foreach ($files as $v) {
 						app.showDisplayAdzan(v, iqomahStart.diff(now));
 					} else if (now.isBetween(iqomahStart, sholatStart, null, '[)')) {
 						if (isJumat) {
-							app.showDisplayKhutbah(sholatStart.diff(now));
+							app.showDisplayKhutbah(sholatStart.diff(now), sholatDuration * 60 * 1000);
 						} else {
-							app.runFullCountDown(iqomahEnd, 'IQOMAH', true);
+							app.runFullCountDown(iqomahEnd, 'IQOMAH', sholatDuration * 60 * 1000, isTarawih);
 						}
 					} else if (now.isBetween(sholatStart, sholatEnd, null, '[)')) {
-						app.showDisplaySholat(sholatEnd.diff(now));
+						app.showDisplaySholat(sholatEnd.diff(now), isTarawih ? function(){
+							app.showDisplayKhutbahTarawih(undefined, app.db.tarawih.duration * 60 * 1000);
+						} : null);
+					} else if (isTarawih && now.isBetween(sholatEnd, khutbahTarawihEnd, null, '[)')) {
+						app.showDisplayKhutbahTarawih(khutbahTarawihEnd.diff(now), app.db.tarawih.duration * 60 * 1000);
+					} else if (isTarawih && now.isBetween(khutbahTarawihEnd, sholatTarawihEnd, null, '[)')) {
+						app.showDisplaySholat(sholatTarawihEnd.diff(now));
 					}
 				});
 			},
@@ -760,7 +788,7 @@ foreach ($files as $v) {
 					}, duration);
 				}
 			},
-			showDisplayKhutbah: function(remainMs) {
+			showDisplayKhutbah: function(remainMs, nextDuration) {
 				if (!app.khutbahTimer) {
 					$('#display-khutbah>div').text(app.db.jumat.text);
 					$('#display-khutbah').show();
@@ -768,22 +796,38 @@ foreach ($files as $v) {
 					app.khutbahTimer = setTimeout(function() {
 						$('#display-khutbah').fadeOut();
 						app.khutbahTimer = false;
-						app.showDisplaySholat();
+						app.showDisplaySholat(nextDuration);
 					}, duration);
 				}
 			},
-			showDisplaySholat: function(remainMs) {
+			showDisplaySholat: function(remainMs, callback) {
 				if (!app.sholatTimer) {
 					$('#display-sholat').show();
 					let duration = remainMs !== undefined ? remainMs : (app.db.timer.sholat * 60 * 1000);
 					app.sholatTimer = setTimeout(function() {
 						$('#display-sholat').fadeOut();
 						app.sholatTimer = false;
-						app.showCountDownNextPray();
+						if (typeof callback === 'function') {
+							callback();
+						} else {
+							app.showCountDownNextPray();
+						}
 					}, duration);
 				}
 			},
-			runFullCountDown: function(jam, title, runDisplaySholat) {
+			showDisplayKhutbahTarawih: function(remainMs, nextDuration) {
+				if (!app.khutbahTimer) {
+					$('#display-khutbah>div').text(app.db.tarawih.text);
+					$('#display-khutbah').show();
+					let duration = remainMs !== undefined ? remainMs : (app.db.tarawih.jeda * 60 * 1000);
+					app.khutbahTimer = setTimeout(function() {
+						$('#display-khutbah').fadeOut();
+						app.khutbahTimer = false;
+						app.showDisplaySholat(nextDuration);
+					}, duration);
+				}
+			},
+			runFullCountDown: function(jam, title, nextDuration, isTarawih) {
 				// clearInterval(app.countDownTimer);
 				if (app.countDownTimer) return; //timer masih jalan
 				app.countDownTimer = setInterval(function() {
@@ -807,8 +851,10 @@ foreach ($files as $v) {
 						clearInterval(app.countDownTimer);
 						app.countDownTimer = false;
 						$('#count-down').fadeOut();
-						if (runDisplaySholat) {
-							app.showDisplaySholat();
+						if (nextDuration) {
+							app.showDisplaySholat(nextDuration, isTarawih ? function(){
+								app.showDisplayKhutbahTarawih(undefined, app.db.tarawih.duration * 60 * 1000);
+							} : null);
 						}
 						// document.getElementById("demo").innerHTML = "EXPIRED";
 					}
