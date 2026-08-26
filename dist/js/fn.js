@@ -90,7 +90,7 @@ var app = {
 	},
 	cekRegistered: function(registered){
 		//Cek sudah login atau session sudah habis ==> reload browser
-		if(!registered)location.reload(); 
+		if(!registered) window.location.href="adm-login.php"; 
 	},
 	
     initialize: function() {

@@ -1,7 +1,8 @@
 <?php
 include_once "session.php";
 if (isset($_SESSION["user_id"])) {
-	header("Location: index.php");
+	header("Location: adm-index.php");
+	exit;
 }
 // print_r ($_SESSION);die;
 $file	= 'db/database.json';

@@ -518,7 +518,7 @@ foreach ($files as $v) {
 			foreach ($db['prayTimesAdjust'] as $k => $v) {
 				if ($v != '') $prayTimesAdjust[$k] = $v;
 			}
-			echo "var prayTimesAdjust =	$.parseJSON('" . stripslashes(str_replace("`", "\\`", json_encode($prayTimesAdjust))) . "');\n";
+			echo "var prayTimesAdjust =	" . json_encode($prayTimesAdjust, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ";\n";
 			// echo "console.log(prayTimesAdjust);\n";
 			echo "prayTimes.adjust(prayTimesAdjust);\n";
 		} else {
@@ -530,7 +530,7 @@ foreach ($files as $v) {
 			if ($v != '0') $prayTimesTune[$k] = $v;
 		}
 		if (count($prayTimesTune) > 0) {
-			echo "var prayTimesTune =	$.parseJSON('" . stripslashes(str_replace("`", "\\`", json_encode($prayTimesTune))) . "');\n";
+			echo "var prayTimesTune =	" . json_encode($prayTimesTune, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ";\n";
 			// echo "console.log(prayTimesTune);\n";
 			echo "prayTimes.tune(prayTimesTune);\n";
 		}
@@ -541,7 +541,7 @@ foreach ($files as $v) {
 		//Baris ini ke bawah jika inget nanti pindah ke file terpisah biar rapi......
 
 		var app = {
-			db: $.parseJSON(`<?= stripslashes(str_replace("`", "\\`", json_encode($showDb))) ?>`),
+			db: <?= json_encode($showDb, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
 			cekDb: false,
 			tglHariIni: '',
 			tglBesok: '',
@@ -715,7 +715,7 @@ foreach ($files as $v) {
 							app.runFullCountDown(iqomahEnd, 'IQOMAH', sholatDuration * 60 * 1000, isTarawih);
 						}
 					} else if (now.isBetween(sholatStart, sholatEnd, null, '[)')) {
-						app.showDisplaySholat(sholatEnd.diff(now), isTarawih ? function(){
+						app.showDisplaySholat(sholatEnd.diff(now), isTarawih ? function() {
 							app.showDisplayKhutbahTarawih(undefined, app.db.tarawih.duration * 60 * 1000);
 						} : null);
 					} else if (isTarawih && now.isBetween(sholatEnd, khutbahTarawihEnd, null, '[)')) {
@@ -852,7 +852,7 @@ foreach ($files as $v) {
 						app.countDownTimer = false;
 						$('#count-down').fadeOut();
 						if (nextDuration) {
-							app.showDisplaySholat(nextDuration, isTarawih ? function(){
+							app.showDisplaySholat(nextDuration, isTarawih ? function() {
 								app.showDisplayKhutbahTarawih(undefined, app.db.tarawih.duration * 60 * 1000);
 							} : null);
 						}
