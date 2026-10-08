@@ -4,6 +4,8 @@ FROM php:5.6-apache
 # Add custom sources.list (point to the archived repositories for Debian Stretch)
 COPY ./docker/custom.source.list /etc/apt/sources.list
 
+RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | cat > /etc/apt/apt.conf.d/10no--check-valid-until
+
 # Install dependencies for PostgreSQL extension, mcrypt, zip, and nano
 RUN apt-get update && apt-get install -y --allow-unauthenticated \
     libpq-dev \

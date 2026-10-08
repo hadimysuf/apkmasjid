@@ -331,7 +331,8 @@ foreach ($files as $v) {
 						<div class="panel-header">
 							<h2 class="glass-title"><i class="fa fa-calendar-check-o"></i> Agenda Kegiatan Masjid</h2>
 						</div>
-						<div class="kegiatan-grid-2x2">
+						<div class="carousel slide" data-ride="carousel" data-interval="<?= $db['timer']['kegiatan'] * 1000 ?>" data-pause="null" data-wrap="false" id="kegiatanCarousel">
+							<div class="carousel-inner" role="listbox">
 							<?php
 							$kegiatanRaw = $db['kegiatan'];
 							$kegiatan = array();
@@ -341,8 +342,8 @@ foreach ($files as $v) {
 									$kegiatan[] = $kr;
 								}
 							}
-							$kegiatan = array_slice($kegiatan, 0, 4); // Max 4 items
 							$bulanSingkat = array("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des");
+							$i = 0;
 							foreach ($kegiatan as $k) {
 								$t = strtotime($k['tanggal']);
 								$d = date('d', $t);
@@ -350,37 +351,46 @@ foreach ($files as $v) {
 								$y = date('Y', $t);
 								$waktu = date('H:i', strtotime($k['waktu']));
 								$mode = isset($k['mode']) ? $k['mode'] : 'teks';
+								$active = $i == 0 ? 'active' : '';
 
+								echo "<div class='item $active'>";
 								if ($mode == 'gambar' && !empty($k['gambar']) && file_exists('display/img/' . $k['gambar'])) {
 									echo "
 									<div class='kegiatan-card-v2'>
-										<div class='k-v2-date-badge'>
+										<div class='k-v2-date-badge' style='transform: scale(1.2); margin: 1vw;'>
 											<span class='d'>{$d}</span>
 											<span class='m'>{$m}</span>
 										</div>
-										<div class='k-v2-content' style='flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; overflow: hidden;'>
-											<div class='k-v2-time' style='margin-bottom: 0.5vw;'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
-											<div style='flex: 1; width: 100%; display: flex; align-items: center; justify-content: flex-start;'>
-												<img src='display/img/{$k['gambar']}' style='max-width: 100%; max-height: 12vw; object-fit: contain; object-position: left center; border-radius: 0.5vw; box-shadow: 0 0.3vw 1vw rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);' />
+										<div class='k-v2-content' style='flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 2vw; width: 100%; overflow: hidden;'>
+											<div style='flex: 0 0 auto;'>
+												<img src='display/img/{$k['gambar']}' style='max-width: 100%; max-height: 40vh; object-fit: contain; object-position: left center; border-radius: 0.5vw; box-shadow: 0 0.3vw 1vw rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);' />
+											</div>
+											<div style='flex: 1; display: flex; flex-direction: column; justify-content: center;'>
+												<div class='k-v2-time' style='font-size: 1.5vw; margin-bottom: 0.5vw;'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
+												<h3 class='k-v2-title' style='font-size: 2.5vw; margin-top: 0;'>{$k['kegiatan']}</h3>
+												<p class='k-v2-speaker' style='font-size: 1.8vw;'>Bersama: <strong>{$k['pemateri']}</strong></p>
 											</div>
 										</div>
 									</div>";
 								} else {
 									echo "
 									<div class='kegiatan-card-v2'>
-										<div class='k-v2-date-badge'>
+										<div class='k-v2-date-badge' style='transform: scale(1.2); margin: 1vw;'>
 											<span class='d'>{$d}</span>
 											<span class='m'>{$m}</span>
 										</div>
 										<div class='k-v2-content'>
-											<div class='k-v2-time'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
-											<h3 class='k-v2-title'>{$k['kegiatan']}</h3>
-											<p class='k-v2-speaker'>Bersama: <strong>{$k['pemateri']}</strong></p>
+											<div class='k-v2-time' style='font-size: 1.5vw;'><i class='fa fa-clock-o'></i> {$waktu} WIB</div>
+											<h3 class='k-v2-title' style='font-size: 2.5vw;'>{$k['kegiatan']}</h3>
+											<p class='k-v2-speaker' style='font-size: 1.8vw;'>Bersama: <strong>{$k['pemateri']}</strong></p>
 										</div>
 									</div>";
 								}
+								echo "</div>";
+								$i++;
 							}
 							?>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -467,6 +477,22 @@ foreach ($files as $v) {
 	<script src="display/js/PrayTimes.js"></script>
 	<script src="display/js/jquery.marquee.js"></script>
 	<script>
+		// ==========================
+		// SIMULASI WAKTU (UNTUK DEMO)
+		// ==========================
+		var timeOffset = 0;
+		var urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('waktu')) {
+			var targetTime = moment(urlParams.get('waktu'), 'HH:mm:ss');
+			if (targetTime.isValid()) {
+				timeOffset = targetTime.diff(moment());
+				console.log('Simulasi Waktu Aktif: ' + urlParams.get('waktu'));
+			}
+		}
+		function getNow() {
+			return moment().add(timeOffset, 'milliseconds');
+		}
+		// ==========================
 		<?php //Biar nggak ke load di HTML
 		// loader 
 		// $(window).on('load', function(){ // makes sure the whole site is loaded
@@ -572,7 +598,7 @@ foreach ($files as $v) {
 				// console.log(app.db);
 
 
-				// let testTime	= moment().add(8,'seconds');
+				// let testTime	= getNow().add(8,'seconds');
 				// app.runRightCountDown(testTime,'Menuju dzuhur');
 				// app.runFullCountDown(testTime,'iqomah',true);
 				// app.runFullCountDown(testTime,'TEST COUNTER',false);
@@ -580,9 +606,9 @@ foreach ($files as $v) {
 				// app.showDisplayKhutbah();
 			},
 			cekPerDetik: function() {
-				if (!app.tglHariIni || moment().format('YYYY-MM-DD') != moment(app.tglHariIni).format('YYYY-MM-DD')) {
-					app.tglHariIni = moment();
-					app.tglBesok = moment().add(1, 'days');
+				if (!app.tglHariIni || getNow().format('YYYY-MM-DD') != moment(app.tglHariIni).format('YYYY-MM-DD')) {
+					app.tglHariIni = getNow();
+					app.tglBesok = getNow().add(1, 'days');
 					// console.log(app.tglHariIni);
 					// console.log(app.tglBesok);
 					app.jadwalHariIni = app.getJadwal(moment(app.tglHariIni).toDate());
@@ -627,15 +653,15 @@ foreach ($files as $v) {
 			},
 			showJadwal: function() {
 				// console.log(app.db.prayName)
-				// let jamSekarang	= moment().add(9,'months');
-				let jamSekarang = moment();
+				// let jamSekarang	= getNow().add(9,'months');
+				let jamSekarang = getNow();
 				//+5 menit baru berubah yang aktif (misal sekarang jam dzuhur, di jadwal setelah 5 menit baru berubah yang ashar yang aktif)
-				let jamDelay = moment().subtract(5, 'minutes');
+				let jamDelay = getNow().subtract(5, 'minutes');
 				let jadwal = '';
 				let hari = app.db.dayName[jamSekarang.format("dddd")]; //pastikan moment js pake standart inggris (default) ==> jangan pindah locale
 				let bulan = app.db.monthName[jamSekarang.format("MMMM")];
 
-				// $('#tgl').html(moment().format("dddd, DD MMMM YYYY"));
+				// $('#tgl').html(getNow().format("dddd, DD MMMM YYYY"));
 				$('#jam').html(jamSekarang.format("HH.mm[<div>]ss[</div>]"));
 				$('#tgl').html(jamSekarang.format("[" + hari + "], DD [" + bulan + "] YYYY"));
 
@@ -656,7 +682,7 @@ foreach ($files as $v) {
 					// console.log('besok');
 				}
 
-				let checkHariJumat = (jamDelay > app.isha) ? moment().add(1, 'days') : jamSekarang;
+				let checkHariJumat = (jamDelay > app.isha) ? getNow().add(1, 'days') : jamSekarang;
 				if (checkHariJumat.format('dddd') === 'Friday' && (app.db.jumat.active === true || app.db.jumat.active == 1)) {
 					app.db.prayName['dhuhr'] = "Salat Jum'at";
 				} else {
@@ -680,7 +706,7 @@ foreach ($files as $v) {
 				$('#jadwal').html(jadwal);
 			},
 			displaySchedule: function() {
-				let now = moment();
+				let now = getNow();
 
 				$.each(app.db.prayName, function(k, v) {
 					// Waktu Mulai & Selesai untuk setiap tahapan
@@ -728,7 +754,7 @@ foreach ($files as $v) {
 				});
 			},
 			getNextPray: function() {
-				let jamSekarang = moment();
+				let jamSekarang = getNow();
 				let nextPray = 'fajr';
 				let jadwalDipake = false;
 				if (jamSekarang > app.isha) {
@@ -888,7 +914,7 @@ foreach ($files as $v) {
 				}, 1000);
 			},
 			countDownCalculate(jam) {
-				let jamSekarang = moment(); //.subtract(2,'seconds');
+				let jamSekarang = getNow(); //.subtract(2,'seconds');
 				// console.log(jam.format('YYYY-MM-DD HH:mm:ss SSS'));
 				// console.log(jamSekarang.format('YYYY-MM-DD HH:mm:ss SSS'));
 				// --> jam.diff(jamSekarang, 'seconds') --> convert integer tanpa pembulatan (pembulatan ke bawah)
@@ -1009,3 +1035,4 @@ foreach ($files as $v) {
 </body>
 
 </html>
+
